@@ -1,30 +1,31 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <utils.h>
-struct Object;
-using ObjPtr = std::shared_ptr<Object>;
+#include<runtime/mc.h>
 namespace dy
 {
     enum class NodeType : int
     {
         UNKOWN,
-        BINOP
+        BINOP,
     };
     class AstNode
     {
     public:
-        virtual ~AstNode();
         AstNode() {}
+        virtual ~AstNode() {}
         AstNode(NodeType nt) : node_type(nt) {}
 
     public:
-        NodeType get_node_type() const { return node_type; }
-        virtual std::string to_string() const { return "<empty node>"; }
-        virtual ObjPtr eval()
+        NodeType get_node_type()
         {
-            dy_error(RUNTIME_ERROR, "internal error");
-            return nullptr;
+            return node_type;
+        }
+        virtual std::string to_string() const{
+            return "<empty node>";
+        }
+        virtual void code_gen(std::vector<dy::Ins> &ins_set){
+            
         }
 
     private:

@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <map>
@@ -38,7 +39,11 @@ namespace dy
         void set_content(const std::string &s);
         void print_tokens();
         void scan();
-
+        void match(TokenType tag);
+        Token this_token();
+        void advance();
+        TokenType cur_tag();
+        bool is_terminal() { return cur_tag() == TokenType::ENDTOKEN; }
     private:
         std::string content;
         std::string filename;

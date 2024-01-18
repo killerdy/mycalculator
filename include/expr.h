@@ -1,17 +1,17 @@
 #pragma once
-#include <lexer.h>
 #include <parser_node.h>
+#include <lexer.h>
 #include <string>
 #include <vector>
+#include<runtime/mc.h>
 namespace dy
 {
     class BinaryNode : public AstNode
     {
     public:
-        BinaryNode(TokenType _op, AstNodePtr _lhs, AstNodePtr _rhs)
-            : op(_op), lhs(std::move(_lhs)), rhs(std::move(_rhs)) {}
+        BinaryNode(TokenType _op, AstNodePtr _lhs, AstNodePtr _rhs) : op(_op), lhs(move(_lhs)), rhs(move(_rhs)) {}
         std::string to_string() const override;
-        ObjPtr eval() override;
+        void code_gen(std::vector<Ins> &ins_set) override;
 
     private:
         TokenType op;
@@ -22,24 +22,13 @@ namespace dy
     {
     public:
         Literal(Token _tok);
-        Literal(ObjPtr _val) : val(_val) {}
+        Literal(int64_t _val) : val(_val) {}
         std::string to_string() const override;
-
+        void code_gen(std::vector<Ins> &ins_set) override;
     private:
-        ObjPtr val;
+        int64_t val;
     };
-    class LocalVar : public AstNode
-    {
-    public:
-        LocalVar(size_t _offset) : offset(_offset) {}
-        ObjPtr eval() override;
-        std::string to_string() const override
-        {
-            return "<param " + std::to_string(offset) + ">";
-        }
-
-    private:
-        size_t offset;
-    };
-    // AstNodePtr parse_expr();
+    AstNodePtr parse_unit(Scanner &scan);
+    AstNodePtr parse_expr(Scanner &scan);
+    AstNodePtr parse_normal_binary(Scanner &scan, int ppred);
 }
