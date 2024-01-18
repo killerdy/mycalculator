@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include<map>
+#include<iostream>
 namespace dy
 {
     extern std::vector<int64_t> mem;
@@ -28,7 +29,7 @@ namespace dy
                 break;
             case ADD:
             {
-                auto tmp = mem[mem.size() - 1] + mem[mem.size() - 2];
+                auto tmp = mem[mem.size() - 2] + mem[mem.size() - 1];
                 mem.pop_back();
                 mem.pop_back();
                 mem.push_back(tmp);
@@ -36,7 +37,7 @@ namespace dy
             }
             case SUB:
             {
-                auto tmp = mem[mem.size() - 1] - mem[mem.size() - 2];
+                auto tmp = mem[mem.size() - 2] - mem[mem.size() - 1];
                 mem.pop_back();
                 mem.pop_back();
                 mem.push_back(tmp);
@@ -44,7 +45,7 @@ namespace dy
             }
             case MUL:
             {
-                auto tmp = mem[mem.size() - 1] * mem[mem.size() - 2];
+                auto tmp = mem[mem.size() - 2] * mem[mem.size() - 1];
                 mem.pop_back();
                 mem.pop_back();
                 mem.push_back(tmp);
@@ -52,7 +53,7 @@ namespace dy
             }
             case DIV:
             {
-                auto tmp = mem[mem.size() - 1] / mem[mem.size() - 2];
+                auto tmp = mem[mem.size() - 2] / mem[mem.size() - 1];
                 mem.pop_back();
                 mem.pop_back();
                 mem.push_back(tmp);
@@ -67,5 +68,5 @@ namespace dy
         Operator oper;
         int64_t num;
     };
-    
+
 }
