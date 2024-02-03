@@ -1,9 +1,11 @@
 #pragma once
+#include <runtime/mc.h>
 #include <string>
+#include<vector>
 #include <memory>
-#include<runtime/mc.h>
 namespace dy
 {
+    class Ins;
     enum class NodeType : int
     {
         UNKOWN,

@@ -8,6 +8,8 @@ namespace dy
     enum class TokenType : int
     {
         ENDTOKEN,
+        COMMA,
+        SYMBOL,
         INT,
         ADD,
         SUB,
@@ -36,6 +38,7 @@ namespace dy
         // Scanner(){}
         Scanner(const std::string &_content) : content(_content), filename("noname") {}
         Token parse_number(const std::string &content, size_t &pos);
+        Token parse_word(const std::string &content,size_t &i);
         void set_content(const std::string &s);
         void print_tokens();
         void scan();

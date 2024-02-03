@@ -9,6 +9,7 @@ int main(){
     // dy_error(FATAL_ERROR,"dayyun");
     std::string s;
     dy::Scanner a;
+    dy::set_basic_inter();
     while(std::getline(std::cin,s))
     {
         while(s=="")

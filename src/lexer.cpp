@@ -4,10 +4,11 @@
 namespace dy
 {
     std::map<std::string, TokenType> keywords = {
-        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}};
-    std::map<TokenType, std::string> rkeywords={
-        {TokenType::ADD,"+"},{TokenType::SUB,"-"},{TokenType::MUL,"*"},{TokenType::DIV,"/"},{TokenType::LPAR,"()"},{TokenType::RPAR,")"}
-    };
+        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR},
+        {",",TokenType::COMMA}};
+    std::map<TokenType, std::string> rkeywords = {
+        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"},
+        {TokenType::COMMA,","}};
     void Scanner::scan()
     {
         size_t &i = content_pos;
@@ -20,13 +21,27 @@ namespace dy
             case '/':
             case '(':
             case ')':
+            case ',':
                 tokens.push_back(Token(keywords[std::string(1, content[i])]));
                 continue;
             default:
-                if (isdigit(content[i]))
+                if (content[i] == '_' || isalpha(content[i]))
+                    tokens.push_back(parse_word(content, i));
+                else if (isdigit(content[i]))
                     tokens.push_back(parse_number(content, content_pos));
                 break;
             }
+    }
+    Token Scanner::parse_word(const std::string &content, size_t &i)
+    {
+        std::string symbol;
+        while (i < content.size() && (content[i] == '_' || isalnum(content[i])))
+            symbol += content[i++];
+        i--;
+        auto it = keywords.find(symbol);
+        if (it == keywords.end())
+            return Token(symbol, TokenType::SYMBOL);
+        return Token({}, it->second);
     }
     Token Scanner::parse_number(const std::string &str, size_t &i)
     {
@@ -45,7 +60,7 @@ namespace dy
         content = s;
         tokens.clear();
         content_pos = 0;
-        pos=0;
+        pos = 0;
     }
     void Scanner::print_tokens()
     {
@@ -74,6 +89,9 @@ namespace dy
                 break;
             case TokenType::INT:
                 printf("INT %ld", it.get_value<int64_t>());
+                break;
+            case TokenType::SYMBOL:
+                printf("SYMBOL %s",it.get_value<std::string>().c_str());
                 break;
             }
             printf("> ");

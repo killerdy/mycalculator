@@ -2,6 +2,7 @@
 #include <vector>
 #include <lexer.h>
 #include <utils.h>
+#include<function.h>
 #include <map>
 namespace dy
 {
@@ -18,6 +19,11 @@ namespace dy
             scan.match(TokenType::RPAR);
             return ret;
         }
+        case TokenType::SYMBOL:
+        {
+            // return parse_symbol(scan);
+            return parse_func(scan);
+        }
         case TokenType::INT:
         {
             scan.advance();
@@ -28,6 +34,12 @@ namespace dy
         }
         return nullptr;
     }
+    // AstNodePtr parse_symbol(Scanner &scan){
+    //     auto tok=scan.this_token();
+    //     scan.match(TokenType::SYMBOL);
+    //     auto symbol_name=tok.get_value<std::string>();
+
+    // }
     AstNodePtr parse_expr(Scanner &scan)
     {
         return parse_normal_binary(scan, 15);
