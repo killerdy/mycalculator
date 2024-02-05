@@ -11,6 +11,7 @@ namespace dy
         COMMA,
         SYMBOL,
         INT,
+        DOUBLE,
         ADD,
         SUB,
         MUL,
@@ -20,7 +21,7 @@ namespace dy
     class Token
     {
     public:
-        using TokenValue = std::variant<std::monostate, std::string, int64_t>;
+        using TokenValue = std::variant<std::monostate, std::string, int64_t,double>;
         Token(const TokenValue &_value, const TokenType &_type) : value(_value), type(_type) {}
         Token(const TokenType &_type) : type(_type) {}
         template <typename T>

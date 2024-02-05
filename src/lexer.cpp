@@ -4,11 +4,9 @@
 namespace dy
 {
     std::map<std::string, TokenType> keywords = {
-        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR},
-        {",",TokenType::COMMA}};
+        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}, {",", TokenType::COMMA}};
     std::map<TokenType, std::string> rkeywords = {
-        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"},
-        {TokenType::COMMA,","}};
+        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"}, {TokenType::COMMA, ","}};
     void Scanner::scan()
     {
         size_t &i = content_pos;
@@ -43,6 +41,18 @@ namespace dy
             return Token(symbol, TokenType::SYMBOL);
         return Token({}, it->second);
     }
+    double parse_float(int base, double val, const std::string &str, size_t &i, Scanner &scanner)
+    {
+        double sum = 1;
+        double ans = 0;
+        i++;
+        while (i < str.size() && isdigit(str[i]))
+        {
+            sum *= base;
+            ans = ans * base + (str[i++] - 48);
+        }
+        return val + ans / sum;
+    }
     Token Scanner::parse_number(const std::string &str, size_t &i)
     {
         unsigned long long ret = 0;
@@ -52,9 +62,16 @@ namespace dy
             ret = ret * base + str[i] - 48;
             i++;
         }
+        if (str[i] == '.')
+        {
+            double val = parse_float(base, ret, str, i, *this);
+            i--;
+            return Token(val, TokenType::DOUBLE);
+        }
         i--;
         return Token((int64_t)ret, TokenType::INT);
     }
+
     void Scanner::set_content(const std::string &s)
     {
         content = s;
@@ -91,7 +108,10 @@ namespace dy
                 printf("INT %ld", it.get_value<int64_t>());
                 break;
             case TokenType::SYMBOL:
-                printf("SYMBOL %s",it.get_value<std::string>().c_str());
+                printf("SYMBOL %s", it.get_value<std::string>().c_str());
+                break;
+            case TokenType::DOUBLE:
+                printf("DOUBLE %lf", it.get_value<double>());
                 break;
             }
             printf("> ");
