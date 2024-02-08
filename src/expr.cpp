@@ -21,25 +21,38 @@ namespace dy
         }
         case TokenType::SYMBOL:
         {
-            // return parse_symbol(scan);
-            return parse_func(scan);
+            return parse_symbol(scan);
+            // return parse_func(scan);
         }
         case TokenType::INT:
         {
             scan.advance();
             return std::make_unique<Literal>(cur_tok);
         }
+        case TokenType::DOUBLE:
+        {
+            
+        }
         default:
             dy_error(SYNTAX_ERROR, "unsupport unit");
         }
         return nullptr;
     }
-    // AstNodePtr parse_symbol(Scanner &scan){
-    //     auto tok=scan.this_token();
-    //     scan.match(TokenType::SYMBOL);
-    //     auto symbol_name=tok.get_value<std::string>();
+    AstNodePtr parse_symbol(Scanner &scan){
+        auto tok=scan.this_token();
+        auto cur_name=tok.get_value<std::string>();
+        
+        if(function_param_id_tab.count(cur_name))
+        {
+            scan.advance();
+            return std::make_unique<Parameter>(cur_name);
+        }
+        return parse_func(scan);
+        
+        // scan.match(TokenType::SYMBOL);
+        // auto symbol_name=tok.get_value<std::string>();
 
-    // }
+    }
     AstNodePtr parse_expr(Scanner &scan)
     {
         return parse_normal_binary(scan, 15);
@@ -94,6 +107,8 @@ namespace dy
     {
         if (tok.get_type() == TokenType::INT)
             val = tok.get_value<int64_t>();
+        else if(tok.get_type()==TokenType::DOUBLE)
+            obj=tok.get_value<double>();
     }
     void BinaryNode::code_gen(std::vector<Ins> &ins_set)
     {
@@ -120,5 +135,11 @@ namespace dy
     void Literal::code_gen(std::vector<Ins> &ins_set)
     {
         ins_set.push_back(Ins(val));
+    }
+    std::string Parameter::to_string()const{
+        return "parameter";
+    }
+    void Parameter::code_gen(std::vector<Ins> &ins_set){
+        
     }
 }

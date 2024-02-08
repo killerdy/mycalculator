@@ -4,9 +4,11 @@
 namespace dy
 {
     std::map<std::string, TokenType> keywords = {
-        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}, {",", TokenType::COMMA}};
+        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}, 
+        {",", TokenType::COMMA},{"=",TokenType::ASSIGN}};
     std::map<TokenType, std::string> rkeywords = {
-        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"}, {TokenType::COMMA, ","}};
+        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"},
+        {TokenType::COMMA, ","},{TokenType::ASSIGN,"="}};
     void Scanner::scan()
     {
         size_t &i = content_pos;
@@ -20,6 +22,7 @@ namespace dy
             case '(':
             case ')':
             case ',':
+            case '=':
                 tokens.push_back(Token(keywords[std::string(1, content[i])]));
                 continue;
             default:

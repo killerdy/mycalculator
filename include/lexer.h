@@ -8,6 +8,7 @@ namespace dy
     enum class TokenType : int
     {
         ENDTOKEN,
+        ASSIGN,
         COMMA,
         SYMBOL,
         INT,

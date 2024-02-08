@@ -3,8 +3,9 @@
 #include <lexer.h>
 #include <string>
 #include <vector>
-#include<runtime/mc.h>
-#include<function.h>
+#include <runtime/mc.h>
+#include <function.h>
+#include <variant>
 namespace dy
 {
     class BinaryNode : public AstNode
@@ -24,24 +25,27 @@ namespace dy
     public:
         Literal(Token _tok);
         Literal(int64_t _val) : val(_val) {}
+
         std::string to_string() const override;
         void code_gen(std::vector<Ins> &ins_set) override;
+
     private:
         int64_t val;
+        std::variant<std::monostate, int64_t, double> obj;
     };
-    class FunctionCall : public AstNode{
+    class Parameter : public AstNode
+    {
     public:
-        FunctionCall(std::string _func_name,int _func_id, std::vector<AstNodePtr>&& _args) : func_name(_func_name),func_id(_func_id), args(std::move(_args)) {}
+        Parameter(std::string _param):param(_param){}
         std::string to_string() const override;
         void code_gen(std::vector<Ins> &ins_set) override;
-        
+
     private:
-        std::string func_name;
-        int func_id;
-        std::vector<AstNodePtr> args;
+        std::string param;
     };
     AstNodePtr parse_unit(Scanner &scan);
     AstNodePtr parse_expr(Scanner &scan);
     AstNodePtr parse_normal_binary(Scanner &scan, int ppred);
     AstNodePtr parse_func(Scanner &scan);
+    AstNodePtr parse_symbol(Scanner &scan);
 }

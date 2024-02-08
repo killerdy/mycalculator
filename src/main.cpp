@@ -4,6 +4,7 @@
 #include<expr.h>
 #include<runtime/mc.h>
 #include<utils.h>
+
 int main(){
     using namespace dy;
     // dy_error(FATAL_ERROR,"dayyun");
@@ -26,6 +27,10 @@ int main(){
         printf("\n===================================\n");
         std::vector<dy::Ins> ins_set;
         root->code_gen(ins_set);
+        for(int pc = 0;pc<ins_set.size();pc++)
+        {
+            
+        }
         for(auto it:ins_set)
         {
             std::cout<<it.to_string()<<"\n";

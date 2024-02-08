@@ -1,5 +1,4 @@
 #pragma once
-#include <function.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -9,10 +8,10 @@
 namespace dy
 {
     class Ins;
+    extern int rsp;
     extern std::vector<int> func_param_cnt;
     extern std::vector<int64_t> mem;
     extern std::vector<std::function<int64_t(std::vector<int64_t>)>> function_tab;
-
     class Ins
     {
     public:
