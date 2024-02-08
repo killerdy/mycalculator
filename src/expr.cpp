@@ -137,9 +137,9 @@ namespace dy
         ins_set.push_back(Ins(val));
     }
     std::string Parameter::to_string()const{
-        return "parameter";
+        return param;
     }
     void Parameter::code_gen(std::vector<Ins> &ins_set){
-        
+        ins_set.push_back(Ins(Ins::PUSH_REL,function_param_id_tab[param]));
     }
 }

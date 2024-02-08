@@ -27,11 +27,11 @@ namespace dy
         function_tab.push_back(dy_add2);
         function_tab.push_back(dy_add3);
         function_tab.push_back(dy_div2);
-        func_param_cnt.push_back(1);
-        func_param_cnt.push_back(1);
-        func_param_cnt.push_back(2);
-        func_param_cnt.push_back(3);
-        func_param_cnt.push_back(2);
+        inter_func_param_cnt.push_back(1);
+        inter_func_param_cnt.push_back(1);
+        inter_func_param_cnt.push_back(2);
+        inter_func_param_cnt.push_back(3);
+        inter_func_param_cnt.push_back(2);
         int id=0;
         inter_function_id_tab["sin"]=id++;
         inter_function_id_tab["cos"]=id++;
