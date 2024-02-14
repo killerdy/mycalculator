@@ -8,6 +8,7 @@
 #include <variant>
 namespace dy
 {
+    
     class BinaryNode : public AstNode
     {
     public:
@@ -42,6 +43,18 @@ namespace dy
 
     private:
         std::string param;
+    };
+    class UserVar :public AstNode
+    {
+        public:
+        UserVar(std::string _var_name,int _var_id,AstNodePtr _next):var_name(_var_name),var_id(var_id),next(move(_next)){}
+        std::string to_string()const override;
+        void code_gen(std::vector<Ins> &ins_set)override;
+        private:
+        std::string var_name;
+        int var_id;
+        AstNodePtr next;
+          
     };
     AstNodePtr parse_unit(Scanner &scan);
     AstNodePtr parse_expr(Scanner &scan);

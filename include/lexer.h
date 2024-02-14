@@ -46,6 +46,7 @@ namespace dy
         void scan();
         void match(TokenType tag);
         Token this_token();
+        Token next_token();
         void advance();
         TokenType cur_tag();
         bool is_terminal() { return cur_tag() == TokenType::ENDTOKEN; }

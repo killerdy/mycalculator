@@ -2,11 +2,14 @@
 #include <vector>
 #include <lexer.h>
 #include <utils.h>
-#include<function.h>
+#include <function.h>
 #include <map>
 namespace dy
 {
+
     extern std::map<TokenType, std::string> rkeywords;
+    extern std::map<std::string, int> var_id_table;
+    extern std::vector<int> var_table;
     AstNodePtr parse_unit(Scanner &scan)
     {
         auto cur_tok = scan.this_token();
@@ -31,27 +34,48 @@ namespace dy
         }
         case TokenType::DOUBLE:
         {
-            
         }
         default:
             dy_error(SYNTAX_ERROR, "unsupport unit");
         }
         return nullptr;
     }
-    AstNodePtr parse_symbol(Scanner &scan){
-        auto tok=scan.this_token();
-        auto cur_name=tok.get_value<std::string>();
-        
-        if(function_param_id_tab.count(cur_name))
+    AstNodePtr parse_symbol(Scanner &scan)
+    {
+        auto tok = scan.this_token();
+        auto cur_name = tok.get_value<std::string>();
+        if (function_param_id_tab.count(cur_name))
         {
             scan.advance();
             return std::make_unique<Parameter>(cur_name);
         }
+        if (scan.next_token().get_type() != TokenType::LPAR)
+        {
+            return parse_var(scan);
+        }
         return parse_func(scan);
-        
+
         // scan.match(TokenType::SYMBOL);
         // auto symbol_name=tok.get_value<std::string>();
-
+    }
+    AstNodePtr parse_var(Scanner &scan)
+    {
+        auto tok = scan.this_token();
+        scan.match(TokenType::SYMBOL);
+        auto var_name = tok.get_value<std::string>();
+        if (scan.next_token().get_type() == TokenType::ASSIGN) // is =
+        {
+            scan.match(TokenType::ASSIGN);
+            if (!var_id_table.count(var_name))
+            {
+                var_id_table[var_name] = var_table.size();
+                var_table.push_back(0);
+            }
+            
+        }
+        else
+        {
+        }
     }
     AstNodePtr parse_expr(Scanner &scan)
     {
@@ -107,8 +131,8 @@ namespace dy
     {
         if (tok.get_type() == TokenType::INT)
             val = tok.get_value<int64_t>();
-        else if(tok.get_type()==TokenType::DOUBLE)
-            obj=tok.get_value<double>();
+        else if (tok.get_type() == TokenType::DOUBLE)
+            obj = tok.get_value<double>();
     }
     void BinaryNode::code_gen(std::vector<Ins> &ins_set)
     {
@@ -136,10 +160,19 @@ namespace dy
     {
         ins_set.push_back(Ins(val));
     }
-    std::string Parameter::to_string()const{
+    std::string Parameter::to_string() const
+    {
         return param;
     }
-    void Parameter::code_gen(std::vector<Ins> &ins_set){
-        ins_set.push_back(Ins(Ins::PUSH_REL,function_param_id_tab[param]));
+    void Parameter::code_gen(std::vector<Ins> &ins_set)
+    {
+        ins_set.push_back(Ins(Ins::PUSH_REL, function_param_id_tab[param]));
+    }
+    std::string UserVar::to_string() const
+    {
+        return "UserVar";
+    }
+    void UserVar::code_gen(std::vector<Ins> &ins_set)
+    {
     }
 }

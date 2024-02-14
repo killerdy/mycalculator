@@ -124,6 +124,9 @@ namespace dy
     {
         return tokens[pos];
     }
+    Token Scanner::next_token(){
+        return tokens[pos+1];
+    }
     void Scanner::match(TokenType tag)
     {
         if (this_token().get_type() != tag)

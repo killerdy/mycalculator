@@ -36,6 +36,7 @@ namespace dy
         {
             PUSH,
             PUSH_REL,
+            PUSH_VAR,
             CALL,
             RET,
             ADD,
