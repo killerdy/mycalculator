@@ -12,6 +12,8 @@ namespace dy
     extern std::vector<std::function<int64_t(std::vector<int64_t>)>> function_tab;
     extern std::vector<int> inter_func_param_cnt;
     extern std::map<std::string, int> inter_function_id_tab;
+
+    
     extern std::map<std::string,int> function_param_id_tab;
     class FunctionCall : public AstNode{
     public:

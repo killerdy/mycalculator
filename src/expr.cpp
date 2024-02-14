@@ -8,8 +8,8 @@ namespace dy
 {
 
     extern std::map<TokenType, std::string> rkeywords;
-    extern std::map<std::string, int> var_id_table;
-    extern std::vector<int> var_table;
+    int var_table_size=0;
+    std::map<std::string, int> var_table;
     AstNodePtr parse_unit(Scanner &scan)
     {
         auto cur_tok = scan.this_token();
@@ -60,29 +60,21 @@ namespace dy
     }
     AstNodePtr parse_var(Scanner &scan)
     {
+
         auto tok = scan.this_token();
         scan.match(TokenType::SYMBOL);
         auto var_name = tok.get_value<std::string>();
-        if (scan.next_token().get_type() == TokenType::ASSIGN) // is =
-        {
-            scan.match(TokenType::ASSIGN);
-            if (!var_id_table.count(var_name))
-            {
-                var_id_table[var_name] = var_table.size();
-                var_table.push_back(0);
-            }
-            
-        }
-        else
-        {
-        }
+
+        return std::make_unique<UserVar>(var_name);
     }
     AstNodePtr parse_expr(Scanner &scan)
     {
+
         return parse_normal_binary(scan, 15);
     }
     AstNodePtr parse_normal_binary(Scanner &scan, int ppred)
     {
+
         if (ppred == 1)
             return parse_unit(scan);
         static std::map<TokenType, std::pair<int, bool>> pred_tab = {
@@ -90,6 +82,8 @@ namespace dy
             {TokenType::SUB, {4, true}},
             {TokenType::MUL, {3, true}},
             {TokenType::DIV, {3, true}},
+            {TokenType::ASSIGN, {10, false}},
+
         };
         auto get_pred = [&](TokenType tag) -> std::pair<int, bool>
         {
@@ -112,12 +106,25 @@ namespace dy
         }
         if (nodes.size() == 1)
             return std::move(nodes.front());
-        AstNodePtr root = std::move(nodes.front());
-        for (int i = 1; i < nodes.size(); i++)
+
+        if (get_pred(scan.cur_tag()).second)
         {
-            root = std::make_unique<BinaryNode>(ops[i - 1], std::move(root), std::move(nodes[i]));
+            AstNodePtr root = std::move(nodes.front());
+            for (int i = 1; i < nodes.size(); i++)
+            {
+                root = std::make_unique<BinaryNode>(ops[i - 1], std::move(root), std::move(nodes[i]));
+            }
+            return root;
         }
-        return root;
+        else
+        {
+            AstNodePtr root = std::move(nodes.back());
+            for (int i = ops.size() - 1; i >= 0; i--)
+            {
+                root = std::make_unique<BinaryNode>(ops[i], std::move(nodes[i]), std::move(root));
+            }
+            return root;
+        }
     }
     std::string BinaryNode::to_string() const
     {
@@ -136,6 +143,19 @@ namespace dy
     }
     void BinaryNode::code_gen(std::vector<Ins> &ins_set)
     {
+
+        if (op == TokenType::ASSIGN)
+        {
+            std::string cur_name = static_cast<UserVar *>(lhs.get())->get_varname();
+            if (!var_table.count(cur_name)) // is =
+            {
+                var_table[cur_name] = var_table.size();
+                ins_set.push_back(Ins(0));
+            }
+            rhs->code_gen(ins_set);
+            ins_set.push_back(Ins(Ins::ST_VAR, var_table[cur_name]));
+            return;
+        }
         lhs->code_gen(ins_set);
         rhs->code_gen(ins_set);
         switch (op)
@@ -170,9 +190,11 @@ namespace dy
     }
     std::string UserVar::to_string() const
     {
-        return "UserVar";
+        return var_name;
     }
     void UserVar::code_gen(std::vector<Ins> &ins_set)
     {
+
+        ins_set.push_back(Ins(Ins::PUSH_VAR, var_table[var_name]));
     }
 }

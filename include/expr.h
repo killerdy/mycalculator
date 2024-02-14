@@ -8,7 +8,9 @@
 #include <variant>
 namespace dy
 {
-    
+
+    extern std::map<std::string,int> var_table;
+    extern int var_table_size;
     class BinaryNode : public AstNode
     {
     public:
@@ -37,28 +39,27 @@ namespace dy
     class Parameter : public AstNode
     {
     public:
-        Parameter(std::string _param):param(_param){}
+        Parameter(std::string _param) : param(_param) {}
         std::string to_string() const override;
         void code_gen(std::vector<Ins> &ins_set) override;
 
     private:
         std::string param;
     };
-    class UserVar :public AstNode
+    class UserVar : public AstNode
     {
-        public:
-        UserVar(std::string _var_name,int _var_id,AstNodePtr _next):var_name(_var_name),var_id(var_id),next(move(_next)){}
-        std::string to_string()const override;
-        void code_gen(std::vector<Ins> &ins_set)override;
-        private:
+    public:
+        UserVar(std::string _var_name) : var_name(_var_name) {}
+        std::string to_string() const override;
+        void code_gen(std::vector<Ins> &ins_set) override;
+        std::string get_varname()const {return var_name;}
+    private:
         std::string var_name;
-        int var_id;
-        AstNodePtr next;
-          
     };
     AstNodePtr parse_unit(Scanner &scan);
     AstNodePtr parse_expr(Scanner &scan);
     AstNodePtr parse_normal_binary(Scanner &scan, int ppred);
     AstNodePtr parse_func(Scanner &scan);
     AstNodePtr parse_symbol(Scanner &scan);
+    AstNodePtr parse_var(Scanner &scan);
 }

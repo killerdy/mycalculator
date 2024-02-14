@@ -12,7 +12,8 @@ namespace dy
     std::vector<int64_t> mem;
     static std::map<Ins::Operator, std::string> ins_map = {
         {Ins::PUSH, "PUSH"},{Ins::ADD, "ADD"},{Ins::SUB, "SUB"},{Ins::MUL, "MUL"},{Ins::DIV, "DIV"},
-        {Ins::PUSH_REL,"PUSH_REL"},{Ins::CALL,"CALL"},{Ins::RET,"RET"}
+        {Ins::PUSH_REL,"PUSH_REL"},{Ins::CALL,"CALL"},{Ins::RET,"RET"},{Ins::PUSH_REL,"PUSH_REL"},
+        {Ins::ST_VAR,"ST_VAR"},
         };
     
     std::string Ins::to_string()

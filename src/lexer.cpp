@@ -1,14 +1,13 @@
 #include <lexer.h>
+#include <cinttypes>
 #include <iostream>
 #include <utils.h>
 namespace dy
 {
     std::map<std::string, TokenType> keywords = {
-        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}, 
-        {",", TokenType::COMMA},{"=",TokenType::ASSIGN}};
+        {"+", TokenType::ADD}, {"-", TokenType::SUB}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"(", TokenType::LPAR}, {")", TokenType::RPAR}, {",", TokenType::COMMA}, {"=", TokenType::ASSIGN}};
     std::map<TokenType, std::string> rkeywords = {
-        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"},
-        {TokenType::COMMA, ","},{TokenType::ASSIGN,"="}};
+        {TokenType::ADD, "+"}, {TokenType::SUB, "-"}, {TokenType::MUL, "*"}, {TokenType::DIV, "/"}, {TokenType::LPAR, "()"}, {TokenType::RPAR, ")"}, {TokenType::COMMA, ","}, {TokenType::ASSIGN, "="}};
     void Scanner::scan()
     {
         size_t &i = content_pos;
@@ -116,6 +115,9 @@ namespace dy
             case TokenType::DOUBLE:
                 printf("DOUBLE %lf", it.get_value<double>());
                 break;
+            case TokenType::ASSIGN:
+                printf("=");
+                break;
             }
             printf("> ");
         }
@@ -124,8 +126,9 @@ namespace dy
     {
         return tokens[pos];
     }
-    Token Scanner::next_token(){
-        return tokens[pos+1];
+    Token Scanner::next_token()
+    {
+        return tokens[pos + 1];
     }
     void Scanner::match(TokenType tag)
     {

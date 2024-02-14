@@ -4,6 +4,8 @@
 #include <map>
 #include <iostream>
 #include <algorithm>
+#include <functional>
+#include <cinttypes>
 
 namespace dy
 {
@@ -15,12 +17,12 @@ namespace dy
     extern void ins_set_clear();
     extern std::vector<int> func_ins_pos;
 
-
     extern int rsp;
     extern std::vector<int> inter_func_param_cnt;
     extern std::vector<int> func_param_cnt;
     extern std::vector<int64_t> mem;
     extern std::vector<std::function<int64_t(std::vector<int64_t>)>> function_tab;
+    extern std::map<std::string,int> var_table;
 
     /*
     fp
@@ -37,6 +39,7 @@ namespace dy
             PUSH,
             PUSH_REL,
             PUSH_VAR,
+            ST_VAR,
             CALL,
             RET,
             ADD,
@@ -52,12 +55,25 @@ namespace dy
         {
             switch (oper)
             {
+            case PUSH_VAR:
+            {
+                mem.push_back(mem[num]);
+                break;
+            }
+            case ST_VAR:
+            {
+
+                mem[num] = mem.back();
+                // mem.pop_back();
+                break;
+            }
             case CALL:
             {
                 mem.push_back(pc);
+                // fp = std::max(var_table.size(), size_t(0));
                 mem.push_back(fp);
                 fp = mem.size() - 2 - func_param_cnt[num];
-                pc=func_ins_pos[num]-1;
+                pc = func_ins_pos[num] - 1;
                 break;
             }
             case RET:
@@ -66,11 +82,11 @@ namespace dy
                 mem.pop_back();
                 int pre_fp = mem.back();
                 mem.pop_back();
-                
+
                 int next_pc = mem.back();
                 mem.pop_back();
-                
-                while (mem.size() >= fp&&mem.size()>0)
+
+                while (mem.size() >= fp && mem.size() >var_table.size() )
                     mem.pop_back();
                 mem.push_back(ret);
                 fp = pre_fp;
