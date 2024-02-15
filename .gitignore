@@ -2,3 +2,4 @@ build/
 /README.md
 test/
 a.exe
+.vscode
