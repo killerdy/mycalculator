@@ -35,10 +35,12 @@ int main()
         // {
         //     std::cout<<it.to_string()<<"\n";
         // }
+
         // printf("\n===================================\n");
         for (pc = ins_maxn; pc < ins_set.size(); pc++)
         {
             // std::cout << ins_set[pc].to_string() << "\n";
+            
             ins_set[pc].execute();
         }
         // for(int pc = 0;pc<ins_set.size();pc++)

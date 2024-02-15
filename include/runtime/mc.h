@@ -86,7 +86,8 @@ namespace dy
                 int next_pc = mem.back();
                 mem.pop_back();
 
-                while (mem.size() >= fp && mem.size() >var_table.size() )
+                // mem.resize(max(fp,var_table.size()))
+                while (mem.size() > fp && mem.size() >var_table.size() )
                     mem.pop_back();
                 mem.push_back(ret);
                 fp = pre_fp;
