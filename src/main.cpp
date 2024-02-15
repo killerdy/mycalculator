@@ -26,17 +26,14 @@ int main()
         // a.print_tokens();
         // printf("\n===================================\n");
         auto root = parse_expr(a);
-        // std::cout << (root->to_string());
-        // printf("\n===================================\n");
+        // std::cout << (root->to_string())<<"\n";
         // std::vector<dy::Ins> ins_set;
-
+        
         root->code_gen(ins_set);
         // for(auto it:ins_set)
         // {
         //     std::cout<<it.to_string()<<"\n";
         // }
-
-        // printf("\n===================================\n");
         for (pc = ins_maxn; pc < ins_set.size(); pc++)
         {
             // std::cout << ins_set[pc].to_string() << "\n";
@@ -62,7 +59,7 @@ int main()
         // }
         // std::cout<<std::endl;
         if (mem.size() > var_table.size())
-            printf("RESULT: %ld\n", dy::mem.back());
+            std::cout<<"RESULT: "<<dy::mem.back().to_string()<<"\n";
         ins_set_clear();
     }
     return 0;

@@ -8,7 +8,7 @@ namespace dy
 {
 
     extern std::map<TokenType, std::string> rkeywords;
-    int var_table_size=0;
+    int var_table_size = 0;
     std::map<std::string, int> var_table;
     AstNodePtr parse_unit(Scanner &scan)
     {
@@ -28,12 +28,10 @@ namespace dy
             // return parse_func(scan);
         }
         case TokenType::INT:
+        case TokenType::DOUBLE:
         {
             scan.advance();
             return std::make_unique<Literal>(cur_tok);
-        }
-        case TokenType::DOUBLE:
-        {
         }
         default:
             dy_error(SYNTAX_ERROR, "unsupport unit");
@@ -132,12 +130,14 @@ namespace dy
     }
     std::string Literal::to_string() const
     {
-        return std::to_string(val);
+        // return std::to_string(val);
+        return "obj";
     }
-    Literal::Literal(Token tok)
+    Literal::Literal(Token tok) 
     {
+
         if (tok.get_type() == TokenType::INT)
-            val = tok.get_value<int64_t>();
+            obj = tok.get_value<int64_t>();
         else if (tok.get_type() == TokenType::DOUBLE)
             obj = tok.get_value<double>();
     }
@@ -150,7 +150,7 @@ namespace dy
             if (!var_table.count(cur_name)) // is =
             {
                 var_table[cur_name] = var_table.size();
-                ins_set.push_back(Ins(0));
+                ins_set.push_back(Ins(Ins::PUSH,0));
             }
             rhs->code_gen(ins_set);
             ins_set.push_back(Ins(Ins::ST_VAR, var_table[cur_name]));
@@ -178,7 +178,7 @@ namespace dy
     }
     void Literal::code_gen(std::vector<Ins> &ins_set)
     {
-        ins_set.push_back(Ins(val));
+        ins_set.push_back(Ins(Ins::PUSH,obj));
     }
     std::string Parameter::to_string() const
     {
@@ -194,7 +194,6 @@ namespace dy
     }
     void UserVar::code_gen(std::vector<Ins> &ins_set)
     {
-
         ins_set.push_back(Ins(Ins::PUSH_VAR, var_table[var_name]));
     }
 }

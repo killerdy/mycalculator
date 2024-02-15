@@ -6,11 +6,13 @@
 #include <runtime/mc.h>
 #include <function.h>
 #include <variant>
+#include <object.h>
 namespace dy
 {
 
-    extern std::map<std::string,int> var_table;
+    extern std::map<std::string, int> var_table;
     extern int var_table_size;
+
     class BinaryNode : public AstNode
     {
     public:
@@ -27,14 +29,16 @@ namespace dy
     {
     public:
         Literal(Token _tok);
-        Literal(int64_t _val) : val(_val) {}
+        Literal(int64_t _val) : obj(_val) {}
+        Literal(double _val):obj(_val){}
 
         std::string to_string() const override;
         void code_gen(std::vector<Ins> &ins_set) override;
 
     private:
-        int64_t val;
-        std::variant<std::monostate, int64_t, double> obj;
+        Object obj;
+        
+
     };
     class Parameter : public AstNode
     {
@@ -52,7 +56,8 @@ namespace dy
         UserVar(std::string _var_name) : var_name(_var_name) {}
         std::string to_string() const override;
         void code_gen(std::vector<Ins> &ins_set) override;
-        std::string get_varname()const {return var_name;}
+        std::string get_varname() const { return var_name; }
+
     private:
         std::string var_name;
     };

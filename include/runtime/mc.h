@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <cinttypes>
-
+#include <object.h>
 namespace dy
 {
     class Ins;
@@ -20,9 +20,9 @@ namespace dy
     extern int rsp;
     extern std::vector<int> inter_func_param_cnt;
     extern std::vector<int> func_param_cnt;
-    extern std::vector<int64_t> mem;
-    extern std::vector<std::function<int64_t(std::vector<int64_t>)>> function_tab;
-    extern std::map<std::string,int> var_table;
+    extern std::vector<Object> mem;
+    extern std::vector<std::function<Object(std::vector<Object>)>> function_tab;
+    extern std::map<std::string, int> var_table;
 
     /*
     fp
@@ -39,6 +39,7 @@ namespace dy
             PUSH,
             PUSH_REL,
             PUSH_VAR,
+            PUSH_FUNC,
             ST_VAR,
             CALL,
             RET,
@@ -48,109 +49,17 @@ namespace dy
             DIV,
         };
 
-        Ins(Operator _oper, int _num = 0) : oper(_oper), num(_num) {}
-        Ins(int _num) : oper(PUSH), num(_num) {}
-        Ins(int _func_id, int x) : oper(PUSH), func_id(_func_id), num(x) {}
-        void execute()
-        {
-            switch (oper)
-            {
-            case PUSH_VAR:
-            {
-                mem.push_back(mem[num]);
-                break;
-            }
-            case ST_VAR:
-            {
-
-                mem[num] = mem.back();
-                // mem.pop_back();
-                break;
-            }
-            case CALL:
-            {
-                mem.push_back(pc);
-                // fp = std::max(var_table.size(), size_t(0));
-                mem.push_back(fp);
-                fp = mem.size() - 2 - func_param_cnt[num];
-                pc = func_ins_pos[num] - 1;
-                break;
-            }
-            case RET:
-            {
-                int64_t ret = mem.back();
-                mem.pop_back();
-                int pre_fp = mem.back();
-                mem.pop_back();
-
-                int next_pc = mem.back();
-                mem.pop_back();
-
-                // mem.resize(max(fp,var_table.size()))
-                while (mem.size() > fp && mem.size() >var_table.size() )
-                    mem.pop_back();
-                mem.push_back(ret);
-                fp = pre_fp;
-                pc = next_pc;
-                break;
-            }
-            case PUSH_REL:
-                mem.push_back(mem[fp + num]);
-                break;
-            case PUSH:
-                if (func_id == -1)
-                    mem.push_back(num);
-                else
-                {
-                    std::vector<int64_t> ve;
-                    for (int i = 0; i < inter_func_param_cnt[func_id]; i++)
-                        ve.push_back(mem.back()), mem.pop_back();
-                    std::reverse(ve.begin(), ve.end());
-                    mem.push_back(function_tab[func_id](ve));
-                }
-                break;
-            case ADD:
-            {
-                auto tmp = mem[mem.size() - 2] + mem[mem.size() - 1];
-                mem.pop_back();
-                mem.pop_back();
-                mem.push_back(tmp);
-                break;
-            }
-            case SUB:
-            {
-                auto tmp = mem[mem.size() - 2] - mem[mem.size() - 1];
-                mem.pop_back();
-                mem.pop_back();
-                mem.push_back(tmp);
-                break;
-            }
-            case MUL:
-            {
-                auto tmp = mem[mem.size() - 2] * mem[mem.size() - 1];
-                mem.pop_back();
-                mem.pop_back();
-                mem.push_back(tmp);
-                break;
-            }
-            case DIV:
-            {
-                auto tmp = mem[mem.size() - 2] / mem[mem.size() - 1];
-                mem.pop_back();
-                mem.pop_back();
-                mem.push_back(tmp);
-                break;
-            }
-            default:
-                break;
-            }
-        }
+        Ins(Operator _oper, Object _obj) : oper(_oper), obj(_obj) {}
+        Ins(Operator _oper) : oper(_oper) {}
+        // Ins( _num) : oper(PUSH), num(_num) {}
+        // Ins(int _func_id, int x) : oper(PUSH), func_id(_func_id), num(x) {}
+        void execute();
         std::string to_string();
 
     private:
         Operator oper;
-        int64_t num;
-        int func_id = -1;
+        Object obj;
+        // int func_id = -1;
     };
 
 }

@@ -5,6 +5,12 @@
 #include <memory>
 namespace dy
 {
+    // enum class TypeID : int
+    // {
+    //     INT,
+    //     FLOAT,
+    //     VOID
+    // };
     enum class NodeType : int
     {
         UNKOWN,
@@ -22,11 +28,12 @@ namespace dy
         {
             return node_type;
         }
-        virtual std::string to_string() const{
+        virtual std::string to_string() const
+        {
             return "<empty node>";
         }
-        virtual void code_gen(std::vector<dy::Ins> &ins_set){
-            
+        virtual void code_gen(std::vector<dy::Ins> &ins_set)
+        {
         }
 
     private:

@@ -1,8 +1,9 @@
 #include <function.h>
 #include <expr.h>
+#include<object.h>
 namespace dy
 {
-    std::vector<std::function<int64_t(std::vector<int64_t>)>> function_tab;
+    std::vector<std::function<Object(std::vector<Object>)>> function_tab;
     std::vector<int> inter_func_param_cnt;
     std::vector<int> func_param_cnt;
     std::map<std::string, int> inter_function_id_tab;
@@ -102,7 +103,7 @@ namespace dy
             {
                 it->code_gen(ins_set);
             }
-            ins_set.push_back(Ins(func_id, 100));
+            ins_set.push_back(Ins(Ins::PUSH_FUNC, func_id));
         }
     }
     void FunctionDefine::code_gen(std::vector<Ins> &ins_set)
