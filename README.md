@@ -3,7 +3,7 @@
 
 ## How to build
 1. install cmake 
-2. `mkdir build && cd build && cmake .. -G'Unix Makefiles'`cd build
+2. `mkdir build && cd build && cmake .. -G'Unix Makefiles'`
 3. `make -j4` 取决于CPU核心数量
 ## Authors
 
