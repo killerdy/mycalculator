@@ -41,8 +41,8 @@ public:
     Object operator-(const Object &rhs) const
     {
         int ty_flag = 0;
-        ty_flag |= (rhs.obj.index() - 1) << 1;
-        ty_flag |= (obj.index() - 1) << 2;
+        ty_flag |= (rhs.obj.index() - 1) << 0;
+        ty_flag |= (obj.index() - 1) << 1;
         switch (ty_flag)
         {
         case 0:
@@ -60,8 +60,8 @@ public:
     Object operator*(const Object &rhs) const
     {
         int ty_flag = 0;
-        ty_flag |= (rhs.obj.index() - 1) << 1;
-        ty_flag |= (obj.index() - 1) << 2;
+        ty_flag |= (rhs.obj.index() - 1) << 0;
+        ty_flag |= (obj.index() - 1) << 1;
         switch (ty_flag)
         {
         case 0:
@@ -79,8 +79,8 @@ public:
     Object operator/(const Object &rhs) const
     {
         int ty_flag = 0;
-        ty_flag |= (rhs.obj.index() - 1) << 1;
-        ty_flag |= (obj.index() - 1) << 2;
+        ty_flag |= (rhs.obj.index() - 1) << 0;
+        ty_flag |= (obj.index() - 1) << 1;
         switch (ty_flag)
         {
         case 0:
